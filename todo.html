@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NeoHire - Futuristic Job Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body {
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    header {
+      text-align: center;
+      padding: 30px;
+      background: linear-gradient(45deg, #00f260, #0575e6);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    header h1 {
+      font-size: 2.8rem;
+      background: linear-gradient(90deg, #fff, #ffefba);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    header p { margin-top: 8px; font-size: 1.2rem; }
+
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .search {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+      background: rgba(255,255,255,0.05);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.1);
+    }
+
+    input, select, button {
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+    }
+    input, select { flex: 1; min-width: 140px; }
+    button {
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    button:hover { transform: scale(1.05); }
+
+    .jobs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .job {
+      background: rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .job:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(255,255,255,0.2);
+    }
+    .job h3 { margin-bottom: 10px; }
+    .job p { font-size: 0.9rem; margin-bottom: 8px; }
+    .tag {
+      display: inline-block;
+      background: #ff9800;
+      color: #000;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      border-radius: 12px;
+      margin-top: 5px;
+    }
+    .details {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      display: none;
+      font-size: 0.85rem;
+      color: #ddd;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.8rem;
+      background: #000;
+      color: #aaa;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>NeoHire 🚀</h1>
+    <p>Your Gateway to the Future of Work</p>
+  </header>
+
+  <div class="container">
+    <div class="search">
+      <input type="text" id="role" placeholder="Job Title (e.g. Developer)" />
+      <select id="location">
+        <option value="">Location</option>
+        <option>Remote</option>
+        <option>Delhi</option>
+        <option>Bangalore</option>
+        <option>Mumbai</option>
+      </select>
+      <button onclick="searchJobs()">Search Jobs</button>
+    </div>
+
+    <div class="jobs" id="jobResults">
+      <!-- Jobs appear here -->
+    </div>
+  </div>
+
+  <footer>
+    © 2025 NeoHire • Designed for Innovation • Built with ❤️
+  </footer>
+
+  <script>
+    const jobs = [
+      {
+        title: "Frontend Developer",
+        location: "Delhi",
+        desc: "React.js | UI/UX | TailwindCSS",
+        type: "Remote",
+        details: "Work with our creative UI team to build highly responsive interfaces. Must be familiar with modern JS frameworks, version control, and agile workflows."
+      },
+      {
+        title: "Backend Engineer",
+        location: "Delhi",
+        desc: "Node.js | MongoDB | APIs",
+        type: "Full-time",
+        details: "Design RESTful APIs, manage databases and integrate services. Experience with Docker and AWS is a bonus. Hybrid work model offered."
+      },
+      {
+        title: "AI Intern",
+        location: "Bangalore",
+        desc: "Python | ML | Research",
+        type: "Internship",
+        details: "Assist in developing and training machine learning models. Basic understanding of neural networks and data preprocessing is required."
+      },
+      {
+        title: "UX Designer",
+        location: "Mumbai",
+        desc: "Figma | Adobe XD",
+        type: "Hybrid",
+        details: "Create intuitive user experiences for our web and mobile platforms. Must show strong portfolio with creative problem-solving abilities."
+      }
+    ];
+
+    function searchJobs() {
+      const role = document.getElementById("role").value.toLowerCase();
+      const location = document.getElementById("location").value;
+      const filtered = jobs.filter(j =>
+        (!role || j.title.toLowerCase().includes(role)) &&
+        (!location || j.location === location)
+      );
+      const container = document.getElementById("jobResults");
+      container.innerHTML = filtered.map((j, i) => `
+        <div class="job" onclick="toggleDetails(${i})">
+          <h3>${j.title}</h3>
+          <p><strong>Location:</strong> ${j.location}</p>
+          <p>${j.desc}</p>
+          <div class="tag">${j.type}</div>
+          <div class="details" id="details-${i}">${j.details}</div>
+        </div>
+      `).join('') || `<p>No matching jobs found.</p>`;
+    }
+
+    function toggleDetails(index) {
+      const el = document.getElementById(`details-${index}`);
+      el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    window.onload = searchJobs;
+  </script>
+</body>
+</html>
